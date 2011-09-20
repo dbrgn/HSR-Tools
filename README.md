@@ -2,7 +2,7 @@ HSR Tools
 =========
 
 HSR Tools is a collection of scripts and tools to simplify life at the
-University of Applied Sciences in Rapperswil, Switzerland.
+[University of Applied Sciences](http://hsr.ch/) in Rapperswil, Switzerland.
 
 Currently all scripts are written in Python.
 
@@ -18,8 +18,8 @@ This is a script to simplify mounting of server folders onto your system.
 
 ### stundenplan.py ###
 
-This tool queries the unterricht.hsr.ch website for the current timetable
-(stundenplan) and lists the lectures for the chosen day.
+This tool queries the https://unterricht.hsr.ch/ website for the current
+timetable (Stundenplan) and lists the lectures for the chosen day.
 
 
 Library
