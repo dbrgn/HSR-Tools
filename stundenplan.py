@@ -86,11 +86,6 @@ with requests.session() as s:
                     field_info[key] = info.text
                 d.append(field_info)
 
-    if args.xml:
-        print 'Generating xml version...'
-    else:
-        print 'Generating text version... (add -x for xml version)'
-
     # Data is now ready to be queried.
     try:
         key = filter(lambda d: d[:2].lower() == args.day, days)[0]
