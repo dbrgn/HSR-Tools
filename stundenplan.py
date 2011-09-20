@@ -7,7 +7,7 @@ import requests
 from BeautifulSoup import BeautifulSoup
 from urllib2 import HTTPError
 from config import auth
-
+from xml.dom.minidom import Document
 
 # Parse arguments
 parser = argparse.ArgumentParser(
@@ -20,6 +20,9 @@ parser.add_argument('day',
 parser.add_argument('-v', '--verbose',
         action='store_true',
         help='show lessons without lectures')
+parser.add_argument('-x', '--xml',
+        action='store_true',
+        help='output to xml')
 args = parser.parse_args()
 
 
@@ -83,19 +86,52 @@ with requests.session() as s:
                     field_info[key] = info.text
                 d.append(field_info)
 
+    if args.xml:
+        print 'Generating xml version...'
+    else:
+        print 'Generating text version... (add -x for xml version)'
+
     # Data is now ready to be queried.
     try:
         key = filter(lambda d: d[:2].lower() == args.day, days)[0]
     except IndexError:
         print 'Day "%s" not found in data.' % args.day
         sys.exit(-1)
-    msg = 'Timetable for r %s:' % key
+    msg = 'Timetable for %s:' % key
     print '-'*len(msg)
-    for time, subj in zip(times, data[key]):
-        if subj:
-            print '%s-%s:' % (time[:5], time[5:10]),
-            print '%s @ %s [%s]' % (subj['lblKuerzel'], subj['lblRaum'], subj['lblDozent'])
-        elif args.verbose:
-            print '%s-%s:' % (time[:5], time[5:10]),
-            print '-'
+
+    if args.xml:
+      doc = Document()
+      root = doc.createElement('timetable')
+      root.setAttribute('owner', username)
+      doc.appendChild(root)
+      day = doc.createElement('day')
+      day.setAttribute('key',key)
+      root.appendChild(day)
+      for time, subj in zip(times, data[key]):
+          if subj:
+              lesson = doc.createElement("lesson")
+              lesson.setAttribute('time','%s-%s:' % (time[:5], time[5:10]))
+              lesson.setAttribute('lecturer',subj['lblDozent'])
+              lesson.setAttribute('room',subj['lblRaum'])
+              text = doc.createTextNode(subj['lblKuerzel'])
+              lesson.appendChild(text)
+              day.appendChild(lesson)
+          else: # TODO: should we consider the verbose flag here?
+              lesson = doc.createElement("lesson")
+              lesson.setAttribute('time','%s-%s:' % (time[:5], time[5:10]))
+              text = doc.createTextNode('-')
+              lesson.appendChild(text)
+              day.appendChild(lesson)
+
+      print doc.toprettyxml(indent='  ')
+    else:
+      print msg
+      for time, subj in zip(times, data[key]):
+          if subj:
+              print '%s-%s:' % (time[:5], time[5:10]),
+              print '%s @ %s [%s]' % (subj['lblKuerzel'], subj['lblRaum'], subj['lblDozent'])
+          elif args.verbose:
+              print '%s-%s:' % (time[:5], time[5:10]),
+              print '-'
 
