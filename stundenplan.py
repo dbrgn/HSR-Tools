@@ -1,16 +1,15 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-USER = 'username'
-PASS = 'password'
-
 import sys
 import argparse
 import requests
 from BeautifulSoup import BeautifulSoup
 from urllib2 import HTTPError
+from config import auth
 
 
+# Parse arguments
 parser = argparse.ArgumentParser(
     description='Query the HSR timetable.',
     epilog='Disclaimer: This is no official HSR app. The correctness \
@@ -24,6 +23,11 @@ parser.add_argument('-v', '--verbose',
 args = parser.parse_args()
 
 
+# Get user credentials
+username, password = auth.userinfo()
+
+
+# Start session
 with requests.session() as s:
 
     print 'Logging in...'
@@ -38,8 +42,8 @@ with requests.session() as s:
     data = {
         '__VIEWSTATE': viewstate,
         '__EVENTVALIDATION': eventvalidation,
-        'tbUserName': USER,
-        'tbPassword': PASS,
+        'tbUserName': username,
+        'tbPassword': password,
         'btnLogin': 'Login',
     }
     login_request = s.post('https://unterricht.hsr.ch/Login.aspx', data=data)
