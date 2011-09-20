@@ -1,3 +1,15 @@
+"""
+Auth config provider for HSR tools.
+
+The goal is that every HSR tool can import this module to access HSR login
+information.
+
+Usage:
+> from config import auth
+> username, password = auth.userdata()
+
+"""
+
 import os
 import stat
 import getpass
