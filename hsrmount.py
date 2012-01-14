@@ -32,9 +32,8 @@ import getpass
 localuser = getpass.getuser()
 username, password = auth.userinfo()
 
-server = "hsr.ch/root/alg" # Server providing the following shares
-# PING c206.hsr.ch (67.215.65.132)
-shares = ["skripte", "scratch"] # The shares on the server to mount
+server = "152.96.90.26" # Server providing the following shares
+shares = ["skripte"] # The shares on the server to mount
  
  
 ##############
