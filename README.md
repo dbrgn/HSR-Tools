@@ -8,6 +8,8 @@ Currently all scripts are written in Python.
 
 Sources can be found at https://github.com/gwrtheyrn/HSR-Tools.
 
+Contributors are welcome!
+
 
 Tools
 -----
@@ -54,4 +56,4 @@ a pull request on Github if you improved one of the scripts.
 Disclaimer
 ----------
 
-All the scripts are inofficial are not supported by the HSR.
+All the scripts are inofficial and not supported by the HSR.
