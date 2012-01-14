@@ -35,8 +35,8 @@ s = requests.session()
 print 'Logging in...'
 
 # Get state data
-login_page = s.get('https://unterricht.hsr.ch/Login.aspx').read()
-soup = BeautifulSoup(login_page)
+login_page = s.get('https://unterricht.hsr.ch/Login.aspx')
+soup = BeautifulSoup(login_page.content)
 viewstate = soup.find('input', {'id': '__VIEWSTATE'})['value']
 eventvalidation = soup.find('input', {'id': '__EVENTVALIDATION'})['value']
 
@@ -54,13 +54,18 @@ login_request = s.post('https://unterricht.hsr.ch/Login.aspx', data=data)
 stundenplan = s.get('https://unterricht.hsr.ch/Stundenplan/StundenplanAnsicht/StundenplanAnsicht.aspx')
 try:
     stundenplan.raise_for_status()
-    print 'Login successful.'
 except HTTPError:
     print 'Login failed.'
     sys.exit(-1)
 
 # Get html table
-soup = BeautifulSoup(stundenplan.read())
+soup = BeautifulSoup(stundenplan.content)
+if soup.find('form', {'id': 'form1'}):
+    # Login form is present, therefore login must have failed
+    print 'Login failed.'
+    sys.exit(-1)
+else:
+    print 'Login successful.'
 table = soup.find('table', {'id': 'ctl00_contentPlaceHolder_StundenplanControl_table'})
 rows = table.findAll('tr')
 
