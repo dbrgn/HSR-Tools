@@ -20,39 +20,40 @@
 #  
 # 0. You just DO WHAT THE FUCK YOU WANT TO.
  
- 
+
+from config import auth
+import os, sys, subprocess
+import getpass
+
 ############################
 # Set the following options
 ############################
 
-username  = "hsr-user" # HSR username
-localuser = "local-user" # The local user that should have write access to the mounted share
-server    = "vf3.hsr.ch" # Server providing the following shares
-shares    = ["skripte", "tmp", username] # The shares on the server to mount
+localuser = getpass.getuser()
+username, password = auth.userinfo()
+
+server = "hsr.ch/root/alg" # Server providing the following shares
+# PING c206.hsr.ch (67.215.65.132)
+shares = ["skripte", "scratch"] # The shares on the server to mount
  
  
 ##############
 # Main script
 ##############
 
-import getpass, os, sys, subprocess
- 
 # Check for root permissions
 if os.getuid():
-        print "You need root permissions to mount smb shares."
-        sys.exit(0)
+    print "You need root permissions to mount smb shares."
+    sys.exit(-1)
  
-# Get HSR password
-password  = getpass.getpass("HSR Password: ")
-
 try:    
-        retval = ""
-        print ""
-        for entry in shares:
-                retval = subprocess.check_call(["mkdir", "-p", "/mnt/%s" % entry])
-                retval = retval + subprocess.check_call(["mount", "-t", "cifs", "//%s/%s" % (server, entry), "-o", "user=%s,pass=%s" % (username, password), "-o", "uid=%s" % localuser, "/mnt/%s" % entry])
-                print "Mounted /mnt/%s" % (entry)
+    retval = ""
+    print ""
+    for entry in shares:
+        retval = subprocess.check_call(["mkdir", "-p", "/mnt/%s" % entry])
+        retval = retval + subprocess.check_call(["mount", "-t", "cifs", "//%s/%s" % (server, entry), "-o", "user=%s,pass=%s" % (username, password), "-o", "uid=%s" % localuser, "/mnt/%s" % entry])
+        print "Mounted /mnt/%s" % (entry)
 
-        print "\nDone mounting."
+    print "\nDone mounting."
 except:
-        print "\nAn error occured. Blame the monkeys."
+    print "\nAn error occured. Blame the monkeys."
