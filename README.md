@@ -6,7 +6,7 @@ HSR Tools is a collection of scripts and tools to simplify life at the
 
 Currently all scripts are written in Python.
 
-Sources can be found at https://github.com/gwrtheyrn/HSR-Tools.
+Sources can be found at https://github.com/dbrgn/HSR-Tools.
 
 Contributors are welcome!
 
